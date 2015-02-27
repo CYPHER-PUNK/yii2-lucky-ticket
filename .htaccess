@@ -1,0 +1,33 @@
+# Mod_Autoindex
+<IfModule mod_autoindex.c>
+  # Запрещаем просмотр содержимого папок
+  Options -Indexes
+</IfModule>
+
+RewriteBase /
+
+# Mod_Rewrite
+<IfModule mod_rewrite.c>
+    Options +FollowSymlinks
+    # Включаем mod_rewrite
+    RewriteEngine On
+
+    RewriteCond %{REQUEST_URI} ^/(backend)
+    RewriteRule ^backend/assets/(.*)$ backend/web/assets/$1 [L]
+    RewriteRule ^backend/css/(.*)$ backend/web/css/$1 [L]
+
+    RewriteCond %{REQUEST_URI} !^/web/(assets|css)/
+    RewriteRule ^.*$ web/index.php [L]
+
+    RewriteCond %{REQUEST_URI} ^/(assets|css|statics)
+    RewriteRule ^assets/(.*)$ web/assets/$1 [L]
+    RewriteRule ^css/(.*)$ web/css/$1 [L]
+    RewriteRule ^statics/(.*)$ statics/web/$1 [L]
+
+    RewriteCond %{REQUEST_URI} !^/(frontend|backend)/web/(assets|css)/
+    RewriteRule ^backend backend/web/index.php
+    RewriteCond %{REQUEST_URI} !index.php
+    RewriteCond %{REQUEST_FILENAME} !-f [OR]
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^.*$ web/index.php
+</IfModule>
